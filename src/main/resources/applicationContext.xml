@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:amq="http://activemq.apache.org/schema/core" xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <context:property-placeholder location="classpath:resources.properties"/>
+    <context:component-scan base-package="org.springframework.message"/>
+
+    <!--1、ActiveMQ 工厂 2、amq命名空间方式 3、默认监听端口61616 4、默认用户名：admin 密码：admin -->
+    <amq:connectionFactory id="connectionFactory" brokerURL="tcp://localhost:61616" userName="admin" password="admin"/>
+    <!--1、定义 ActiveMQ 队列 2、借助physicalName属性指定消息通道的名称-->
+    <amq:queue id="queue" physicalName="queueName"/>
+    <!--1、定义 Active 主题-->
+    <amq:topic id="topic" physicalName="topicName"/>
+
+    <!--jmsTemplate-->
+    <bean id="jmsTemplate"
+          class="org.springframework.jms.core.JmsTemplate"
+          p:connectionFactory-ref="connectionFactory"
+          p:defaultDestination-ref="queue"
+          p:messageConverter-ref="messageConverter"/>
+
+    <!--MessageConvert-->
+    <bean id="messageConverter" class="org.springframework.jms.support.converter.SimpleMessageConverter"/>
+
+    <!--消息监听器-->
+    <jms:listener-container connection-factory="connectionFactory">
+        <jms:listener destination="queueName" ref="queueMessageHanler" method="handle"/>
+        <jms:listener destination="topicName" ref="topicMessageHanler" method="handle1"/>
+    </jms:listener-container>
+
+    <!--分隔符-->
+
+    <!--1、ActiveMQ 工厂 2、普通bean方式 -->
+    <bean id="connectionFactory2"
+          class="org.apache.activemq.spring.ActiveMQConnectionFactory"
+          p:userName="admin"
+          p:password="admin"
+          p:brokerURL="tcp://localhost:61616"/>
+    <bean id="queue2" class="org.apache.activemq.command.ActiveMQQueue" p:physicalName="queueName2"/>
+    <bean id="topic2" class="org.apache.activemq.command.ActiveMQTopic" p:physicalName="topicName2"/>
+
+
+</beans>
