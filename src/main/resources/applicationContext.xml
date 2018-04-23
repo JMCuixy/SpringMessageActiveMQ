@@ -11,17 +11,21 @@
     <context:component-scan base-package="org.springframework.message"/>
 
     <!--1、ActiveMQ 工厂 2、amq命名空间方式 3、默认监听端口61616 4、默认用户名：admin 密码：admin -->
-    <amq:connectionFactory id="connectionFactory" brokerURL="tcp://localhost:61616" userName="admin" password="admin"/>
-    <!--1、定义 ActiveMQ 队列 2、借助physicalName属性指定消息通道的名称-->
-    <amq:queue id="queue" physicalName="queueName"/>
-    <!--1、定义 Active 主题-->
-    <amq:topic id="topic" physicalName="topicName"/>
+    <amq:connectionFactory id="connectionFactory"
+                           brokerURL="tcp://localhost:61616"
+                           userName="admin"
+                           password="admin"/>
 
-    <!--jmsTemplate-->
+    <!--1、定义消息目的地，可以是队列或者主题两种方式 2、借助physicalName属性指定消息通道的名称-->
+    <amq:queue id="queueDestination" physicalName="queueName"/>
+    <amq:topic id="topicDestination" physicalName="topicName"/>
+
+
+    <!--1、jmsTemplate 2、defaultDestination 定义了默认的消息目的地 3、messageConverter 消息转换器 -->
     <bean id="jmsTemplate"
           class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="queue"
+          p:defaultDestination-ref="queueDestination"
           p:messageConverter-ref="messageConverter"/>
 
     <!--MessageConvert-->
@@ -29,8 +33,8 @@
 
     <!--消息监听器-->
     <jms:listener-container connection-factory="connectionFactory">
-        <jms:listener destination="queueName" ref="queueMessageHanler" method="handle"/>
-        <jms:listener destination="topicName" ref="topicMessageHanler" method="handle1"/>
+        <jms:listener destination="queueName" ref="queueMessageHandler" method="handle"/>
+        <jms:listener destination="topicName" ref="topicMessageHandler" method="handle"/>
     </jms:listener-container>
 
     <!--分隔符-->

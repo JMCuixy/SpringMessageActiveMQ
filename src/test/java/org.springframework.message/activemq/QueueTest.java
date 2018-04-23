@@ -26,11 +26,11 @@ public class QueueTest {
     private JmsOperations jmsOperations;
 
     /**
-     * jmsOperations.send() 方法，"queueName" 不填写，用默认的 Destination
+     * jmsOperations.send() 方法，"queue" 不填写，用默认的 Destination
      */
     @Test
     public void send(){
-        jmsOperations.send("queueName", new MessageCreator() {
+        jmsOperations.send("queue", new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
                 List<String> list = new ArrayList<>();
@@ -43,7 +43,22 @@ public class QueueTest {
     }
 
     /**
-     * jmsOperations.convertAndSend() 方法，"queueName" 不填写，用默认的 Destination
+     * jmsOperations 的 receiveAndConvert() 方法
+     */
+    @Test
+    public void receiveAndConvert(){
+        List<String> queueName = (List) jmsOperations.receiveAndConvert("queue");
+        String s = queueName.get(0);
+        System.out.println("-----------" + s + "-------------");
+    }
+
+
+    /*-------------------------------------------------------------------------*/
+
+
+
+    /**
+     * jmsOperations.convertAndSend() 方法，"queue" 不填写，用默认的 Destination
      */
     @Test
     public void convertAndSend(){
@@ -51,12 +66,7 @@ public class QueueTest {
         map.put("java", "java");
         map.put("python", "python");
         map.put("c++", "c++");
-        jmsOperations.convertAndSend("queueName", map);
-    }
-
-    @Test
-    public void convertAndSend2(){
-        jmsOperations.convertAndSend("queueName","text");
+        jmsOperations.convertAndSend("queue", map);
     }
 
     /**
@@ -64,7 +74,7 @@ public class QueueTest {
      */
     @Test
     public void receive(){
-        MapMessage message =(MapMessage)  jmsOperations.receive("queueName");
+        MapMessage message =(MapMessage)  jmsOperations.receive("queue");
         try {
             String java = message.getString("java");
             System.out.println("----------" + java + "----------");
@@ -73,13 +83,11 @@ public class QueueTest {
         }
     }
 
-    /**
-     * jmsOperations 的 receiveAndConvert() 方法
-     */
+
+    /*----------------------------------------------------------------------*/
+
     @Test
-    public void receiveAndConvert(){
-        List<String> queueName = (List) jmsOperations.receiveAndConvert("queueName");
-        String s = queueName.get(0);
-        System.out.println("-----------" + s + "-------------");
+    public void convertAndSend2(){
+        jmsOperations.convertAndSend("text");
     }
 }

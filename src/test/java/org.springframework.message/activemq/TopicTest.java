@@ -23,15 +23,6 @@ public class TopicTest {
     @Autowired
     private JmsOperations jmsOperations;
 
-    @Test
-    public void send(){
-        jmsOperations.send("topicName", new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                return session.createTextMessage("Hello Topic");
-            }
-        });
-    }
 
     @Test
     public void convertAndSend(){
