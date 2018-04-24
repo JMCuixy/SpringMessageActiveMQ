@@ -12,9 +12,9 @@
 
     <!--1、ActiveMQ 工厂 2、amq命名空间方式 3、默认监听端口61616 4、默认用户名：admin 密码：admin -->
     <amq:connectionFactory id="connectionFactory"
-                           brokerURL="tcp://localhost:61616"
-                           userName="admin"
-                           password="admin"/>
+                           brokerURL="tcp://${activeMQ.host}:${activeMQ.port}"
+                           userName="${activeMQ.userName}"
+                           password="${activeMQ.password}"/>
 
     <!--1、定义消息目的地，可以是队列或者主题两种方式 2、借助physicalName属性指定消息通道的名称-->
     <amq:queue id="queueDestination" physicalName="queueName"/>
@@ -35,7 +35,23 @@
     <jms:listener-container connection-factory="connectionFactory">
         <jms:listener destination="queueName" ref="queueMessageHandler" method="handle"/>
         <jms:listener destination="topicName" ref="topicMessageHandler" method="handle"/>
+        <jms:listener destination="queueList" ref="queueMessageHandler" method="handle2"/>
+
+        <!--利用jms监听器导出消息服务-->
+        <jms:listener destination="sparta" ref="jmsServer"/>
     </jms:listener-container>
+
+
+    <bean id="jmsServer" class="org.springframework.jms.remoting.JmsInvokerServiceExporter"
+          p:serviceInterface="org.springframework.message.activemq.rpc.JmsServer"
+          p:service-ref="jmsServerImpl"/>
+
+
+    <!--远程代理工厂 bean ，供客户端访问-->
+    <bean id="jmsServerProxy" class="org.springframework.jms.remoting.JmsInvokerProxyFactoryBean"
+          p:serviceInterface="org.springframework.message.activemq.rpc.JmsServer"
+          p:connectionFactory-ref="connectionFactory"
+          p:queueName="sparta"/>
 
     <!--分隔符-->
 

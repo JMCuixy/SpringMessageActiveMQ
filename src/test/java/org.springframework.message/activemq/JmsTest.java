@@ -14,7 +14,7 @@ import javax.jms.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContext.xml")
-public class JMS_Test {
+public class JmsTest {
 
     @Test
     public void producer(){
@@ -23,11 +23,13 @@ public class JMS_Test {
         Session session = null;
         try {
             conn = cf.createConnection();
+            conn.start();
             session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination destination = new ActiveMQQueue("queueTest");
             MessageProducer producer = session.createProducer(destination);
             TextMessage message = session.createTextMessage("Hello Message");
             producer.send(message);
+            conn.stop();
         } catch (JMSException e) {
             e.printStackTrace();
         } finally {
@@ -51,11 +53,14 @@ public class JMS_Test {
         Session session = null;
         try {
             conn = cf.createConnection();
-            session = conn.createSession(false ,Session.AUTO_ACKNOWLEDGE);
+            conn.start();
+            session = conn.createSession(true ,Session.AUTO_ACKNOWLEDGE);
             Destination destination = new ActiveMQQueue("queueTest");
             MessageConsumer consumer = session.createConsumer(destination);
-            TextMessage message =(TextMessage) consumer.receive();
-            System.out.println("---------------------------" + message.getText() + "-----------------------------------");
+            Message receive = consumer.receive(5000L);
+            TextMessage message = (TextMessage) receive;
+            if (message != null) System.out.println("---------------" + message.getText() + "------------------");
+            conn.stop();
         } catch (JMSException e) {
             e.printStackTrace();
         } finally {

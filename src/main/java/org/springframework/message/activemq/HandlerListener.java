@@ -13,6 +13,10 @@ import javax.jms.MessageListener;
 @Component
 public class HandlerListener implements MessageListener {
 
+    /**
+     * 如果监听器连接的是这个bean，可以不指定 method ，默认调用 onMessage() 方法
+     * @param message
+     */
     @Override
     public void onMessage(Message message) {
 

@@ -90,4 +90,13 @@ public class QueueTest {
     public void convertAndSend2(){
         jmsOperations.convertAndSend("text");
     }
+
+    @Test
+    public void convertAndSend3(){
+        List<String> list = new ArrayList<>();
+        list.add("java");
+        list.add("python");
+        list.add("c++");
+        jmsOperations.convertAndSend("queueList",list);
+    }
 }
