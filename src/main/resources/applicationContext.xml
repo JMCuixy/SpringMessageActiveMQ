@@ -14,7 +14,8 @@
     <amq:connectionFactory id="connectionFactory"
                            brokerURL="tcp://${activeMQ.host}:${activeMQ.port}"
                            userName="${activeMQ.userName}"
-                           password="${activeMQ.password}"/>
+                           password="${activeMQ.password}"
+                           trustAllPackages="true" />
 
     <!--1、定义消息目的地，可以是队列或者主题两种方式 2、借助physicalName属性指定消息通道的名称-->
     <amq:queue id="queueDestination" physicalName="queueName"/>

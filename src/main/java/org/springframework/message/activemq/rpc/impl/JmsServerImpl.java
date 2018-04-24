@@ -12,6 +12,6 @@ public class JmsServerImpl implements JmsServer {
 
     @Override
     public void doServer(String str) {
-        System.out.println("服务输出" + str + "++++++++++++++++++++");
+        System.out.println("your message::".concat(str).concat(":::length:") + str.length());
     }
 }

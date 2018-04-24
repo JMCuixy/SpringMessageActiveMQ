@@ -19,9 +19,7 @@ import javax.annotation.Resource;
 public class RpcTest {
 
 
-    /**
-     * @// TODO: 2018/4/24 Forbidden class org.springframework.remoting.support.RemoteInvocation!
-     */
+
     @Test
     public void test01(){
         ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
