@@ -43,7 +43,8 @@
     </jms:listener-container>
 
 
-    <bean id="jmsServer" class="org.springframework.jms.remoting.JmsInvokerServiceExporter"
+    <bean id="jmsServer"
+          class="org.springframework.jms.remoting.JmsInvokerServiceExporter"
           p:serviceInterface="org.springframework.message.activemq.rpc.JmsServer"
           p:service-ref="jmsServerImpl"/>
 
